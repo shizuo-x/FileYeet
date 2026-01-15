@@ -24,7 +24,7 @@ FileYeet is a simple, Dockerized tool designed to recursively find files with a 
 
 1.  **Clone the repository:**
     ```bash
-    git clone https://github.com/yourusername/fileyeet.git
+    git clone https://github.com/shizuo-x/fileyeet.git
     cd fileyeet
     ```
 
