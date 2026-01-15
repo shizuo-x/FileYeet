@@ -2,7 +2,7 @@
 
 FileYeet is a simple, Dockerized tool designed to recursively find files with a specific extension in a source directory and "yeet" (copy) them all into a single flat destination folder. It features a retro-modern, neo-brutalist web interface for easy operation.
 
-![FileYeet Screenshot](https://via.placeholder.com/800x450?text=FileYeet+UI+Screenshot)
+<img width="1758" height="962" alt="image" src="https://github.com/user-attachments/assets/0041bd6f-f32f-431e-8d24-6d998095b6c0" />
 
 ## Features
 
