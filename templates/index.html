@@ -1,0 +1,488 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FileYeet</title>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Mono:ital,wght@0,400;0,700;1,400&family=Work+Sans:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-color: #f2e8da;
+            --card-bg: #fff;
+            --accent-color: #ff7e5f;
+            --text-color: #1a1a1a;
+            --border-color: #000000;
+            --border-width: 2px;
+            --sidebar-width: 80px;
+        }
+
+        * { box-sizing: border-box; }
+
+        body {
+            font-family: 'Work Sans', sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            margin: 0;
+            padding: 0;
+            min-height: 100vh;
+            display: flex;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            width: var(--sidebar-width);
+            border-right: var(--border-width) solid var(--border-color);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px 0;
+            background: var(--bg-color);
+            position: fixed;
+            height: 100%;
+            z-index: 10;
+        }
+
+        .logo {
+            font-size: 24px;
+            margin-bottom: 40px;
+        }
+
+        .nav-item {
+            padding: 15px;
+            margin-bottom: 10px;
+            cursor: pointer;
+            border: var(--border-width) solid transparent;
+            border-radius: 8px;
+            transition: all 0.2s;
+        }
+
+        .nav-item:hover, .nav-item.active {
+            background: var(--card-bg);
+            border-color: var(--border-color);
+            box-shadow: 4px 4px 0 var(--border-color);
+        }
+
+        /* Main Content */
+        .main-content {
+            flex: 1;
+            margin-left: var(--sidebar-width);
+            padding: 40px;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        /* Header */
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 40px;
+            border-bottom: var(--border-width) solid var(--border-color);
+            padding-bottom: 20px;
+        }
+
+        .header h1 {
+            font-family: 'Space Mono', monospace;
+            font-size: 2.5rem;
+            margin: 0;
+            text-transform: uppercase;
+            letter-spacing: -1px;
+        }
+
+        /* Cards */
+        .card {
+            background: var(--card-bg);
+            border: var(--border-width) solid var(--border-color);
+            padding: 40px;
+            margin-bottom: 30px;
+            box-shadow: 8px 8px 0 var(--border-color);
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Form Elements */
+        .form-group {
+            margin-bottom: 25px;
+        }
+
+        label {
+            display: block;
+            font-weight: 700;
+            margin-bottom: 10px;
+            text-transform: uppercase;
+            font-size: 0.9rem;
+            letter-spacing: 0.5px;
+        }
+
+        .input-wrapper {
+            display: flex;
+            gap: 15px;
+        }
+
+        input[type="text"] {
+            width: 100%;
+            padding: 15px;
+            border: var(--border-width) solid var(--border-color);
+            font-family: 'Space Mono', monospace;
+            font-size: 1rem;
+            background: #fff;
+            outline: none;
+        }
+
+        input[type="text"]:focus {
+            background: #fffdf0;
+        }
+
+        /* Buttons */
+        .btn {
+            background: var(--card-bg);
+            border: var(--border-width) solid var(--border-color);
+            padding: 12px 24px;
+            font-family: 'Space Mono', monospace;
+            font-weight: 700;
+            cursor: pointer;
+            text-transform: uppercase;
+            font-size: 0.9rem;
+            transition: all 0.1s;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .btn:hover {
+            background: #eee;
+            transform: translate(-2px, -2px);
+            box-shadow: 4px 4px 0 var(--border-color);
+        }
+
+        .btn:active {
+            transform: translate(0, 0);
+            box-shadow: none;
+        }
+
+        .btn-primary {
+            background: var(--accent-color);
+            width: 100%;
+            padding: 20px;
+            font-size: 1.2rem;
+            margin-top: 20px;
+        }
+
+        .btn-primary:hover {
+            background: #ff633f;
+        }
+
+        .btn-browse {
+            white-space: nowrap;
+            min-width: 120px;
+        }
+
+        /* Log Console */
+        #log {
+            font-family: 'Space Mono', monospace;
+            background: #1a1a1a;
+            color: #00ff00;
+            padding: 20px;
+            border: var(--border-width) solid var(--border-color);
+            margin-top: 30px;
+            white-space: pre-wrap;
+            display: none;
+            max-height: 300px;
+            overflow-y: auto;
+            box-shadow: 8px 8px 0 rgba(0,0,0,0.5);
+        }
+
+        /* Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 100;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(242, 232, 218, 0.9);
+            backdrop-filter: blur(2px);
+        }
+
+        .modal-content {
+            background-color: #fff;
+            margin: 5% auto;
+            padding: 0;
+            border: var(--border-width) solid var(--border-color);
+            width: 80%;
+            max-width: 800px;
+            box-shadow: 12px 12px 0 var(--border-color);
+        }
+
+        .modal-header {
+            padding: 20px;
+            border-bottom: var(--border-width) solid var(--border-color);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: var(--accent-color);
+        }
+
+        .modal-header h2 { margin: 0; font-family: 'Space Mono', monospace; }
+
+        .close {
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+            line-height: 1;
+        }
+
+        .file-list-container {
+            padding: 20px;
+            max-height: 60vh;
+            overflow-y: auto;
+        }
+
+        .file-list { list-style: none; padding: 0; margin: 0; }
+        
+        .file-list li {
+            padding: 12px;
+            cursor: pointer;
+            border: 1px solid transparent;
+            font-family: 'Space Mono', monospace;
+            display: flex;
+            align-items: center;
+            margin-bottom: 5px;
+        }
+
+        .file-list li:hover {
+            background-color: #f0f0f0;
+            border: 1px solid var(--border-color);
+        }
+
+        .folder-icon { margin-right: 15px; font-size: 1.2em; }
+
+        .modal-footer {
+            padding: 20px;
+            border-top: var(--border-width) solid var(--border-color);
+            text-align: right;
+            background: #f9f9f9;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .sidebar {
+                width: 100%;
+                height: 60px;
+                flex-direction: row;
+                justify-content: space-around;
+                padding: 0;
+                border-right: none;
+                border-bottom: var(--border-width) solid var(--border-color);
+                bottom: 0;
+                position: fixed;
+                top: auto;
+            }
+            
+            .main-content {
+                margin-left: 0;
+                margin-bottom: 80px;
+                padding: 20px;
+            }
+
+            .logo { display: none; }
+            .header h1 { font-size: 1.8rem; }
+            .input-wrapper { flex-direction: column; }
+            .btn-browse { width: 100%; }
+        }
+    </style>
+</head>
+<body>
+    <div class="sidebar">
+        <div class="logo">🗃️</div>
+        <div class="nav-item active" title="Home">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg>
+        </div>
+    </div>
+
+    <div class="main-content">
+        <div class="header">
+            <h1>FileYeet V1.0</h1>
+            <div style="font-family: 'Space Mono';">USER: ADMIN</div>
+        </div>
+
+        <div class="card">
+            <div style="border-bottom: 2px solid #000; padding-bottom: 10px; margin-bottom: 20px; display: flex; justify-content: space-between; align-items: center;">
+                <h2 style="margin:0;">TASK CONFIGURATION</h2>
+                <div style="width: 15px; height: 15px; background: #000; border-radius: 50%;"></div>
+            </div>
+
+            <div class="form-group">
+                <label for="extension">Target Extension</label>
+                <input type="text" id="extension" value="mp3" placeholder="e.g. mp3, jpg, pdf">
+            </div>
+
+            <div class="form-group">
+                <label for="input_path">Source Directory</label>
+                <div class="input-wrapper">
+                    <input type="text" id="input_path" placeholder="Select source folder..." readonly>
+                    <button type="button" class="btn btn-browse" onclick="openBrowser('input_path')">
+                        📂 BROWSE
+                    </button>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="output_path">Destination Directory</label>
+                <div class="input-wrapper">
+                    <input type="text" id="output_path" placeholder="Select destination folder..." readonly>
+                    <button type="button" class="btn btn-browse" onclick="openBrowser('output_path')">
+                        📂 BROWSE
+                    </button>
+                </div>
+            </div>
+
+            <button id="startBtn" class="btn btn-primary" onclick="startScan()">
+                EXECUTE COPY OPERATION
+            </button>
+        </div>
+
+        <div id="log"></div>
+    </div>
+
+    <!-- Folder Browser Modal -->
+    <div id="browserModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>SELECT DIRECTORY</h2>
+                <span class="close" onclick="closeBrowser()">&times;</span>
+            </div>
+            <div style="padding: 15px; background: #eee; border-bottom: 2px solid #000; font-family: 'Space Mono';">
+                PATH: <span id="modalCurrentPath">/</span>
+            </div>
+            <div class="file-list-container">
+                <ul class="file-list" id="fileList"></ul>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn" onclick="selectCurrentFolder()">CONFIRM SELECTION</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let currentBrowserTarget = null;
+        let currentPath = '/mnt/c'; 
+
+        async function openBrowser(targetId) {
+            currentBrowserTarget = targetId;
+            const existingValue = document.getElementById(targetId).value;
+            
+            // If the input has a value, start browsing from there
+            if (existingValue && existingValue.trim() !== '') {
+                currentPath = existingValue;
+            }
+            
+            document.getElementById('browserModal').style.display = 'block';
+            await loadDirectory(currentPath);
+        }
+
+        function closeBrowser() {
+            document.getElementById('browserModal').style.display = 'none';
+            currentBrowserTarget = null;
+        }
+
+        async function loadDirectory(path) {
+            try {
+                const response = await fetch(`/browse?path=${encodeURIComponent(path)}`);
+                const data = await response.json();
+                
+                if (data.error) {
+                    alert('Error: ' + data.error);
+                    return;
+                }
+
+                currentPath = data.current_path;
+                document.getElementById('modalCurrentPath').textContent = currentPath;
+                
+                const list = document.getElementById('fileList');
+                list.innerHTML = '';
+
+                data.items.forEach(item => {
+                    const li = document.createElement('li');
+                    li.innerHTML = `<span class="folder-icon">📁</span> ${item.name}`;
+                    li.onclick = () => loadDirectory(item.path);
+                    list.appendChild(li);
+                });
+            } catch (error) {
+                console.error('Failed to load directory:', error);
+                alert('Failed to load directory contents');
+            }
+        }
+
+        function selectCurrentFolder() {
+            if (currentBrowserTarget) {
+                document.getElementById(currentBrowserTarget).value = currentPath;
+                closeBrowser();
+            }
+        }
+
+        async function startScan() {
+            const btn = document.getElementById('startBtn');
+            const log = document.getElementById('log');
+            const inputPath = document.getElementById('input_path').value;
+            const outputPath = document.getElementById('output_path').value;
+            const extension = document.getElementById('extension').value;
+
+            if (!inputPath || !outputPath) {
+                alert('Please select both input and output folders');
+                return;
+            }
+
+            if (!extension) {
+                alert('Please enter a file extension');
+                return;
+            }
+
+            btn.disabled = true;
+            btn.textContent = 'PROCESSING...';
+            log.style.display = 'block';
+            log.textContent = '> INITIALIZING SCAN SEQUENCE...\n';
+
+            try {
+                const response = await fetch('/scan', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ 
+                        input_path: inputPath, 
+                        output_path: outputPath,
+                        extension: extension
+                    })
+                });
+
+                const data = await response.json();
+                
+                if (data.status === 'success') {
+                    log.textContent += `> ${data.message}\n`;
+                    if (data.errors && data.errors.length > 0) {
+                        log.textContent += '\n[!] ERRORS DETECTED:\n' + data.errors.join('\n');
+                    }
+                    log.textContent += '\n> SEQUENCE COMPLETED SUCCESSFULLY.';
+                } else {
+                    log.textContent += `\n[!] CRITICAL ERROR: ${data.message}`;
+                }
+            } catch (error) {
+                log.textContent += `\n[!] NETWORK ERROR: ${error.message}`;
+            } finally {
+                btn.disabled = false;
+                btn.textContent = 'EXECUTE COPY OPERATION';
+            }
+        }
+
+        window.onclick = function(event) {
+            const modal = document.getElementById('browserModal');
+            if (event.target == modal) {
+                closeBrowser();
+            }
+        }
+    </script>
+</body>
+</html>
